@@ -1,19 +1,22 @@
 import cairo
 from math import atan2, cos, sin, tan, pi
 
-width = 400
-height= 600
+nameTree="tree"
+
+width = 200
+height= 300
 Full = True
+
 nStepWidth = 4
 nStepHeight = 4
 
 nCut = -1
 IncreasingCut = True
 
-widthCut = 10
+widthCut = 15
 karc = 0.4
-radiusHole = 5
-distanceHole = 20
+radiusHole = 2
+distanceHole = 10
 
 widthTab = 3
 ReverseTab = True
@@ -29,7 +32,7 @@ distanceHole *= scaleFactor
 widthTab *= scaleFactor
 
 
-with cairo.SVGSurface("tree.svg", width, height) as surface:
+with cairo.SVGSurface(f"{nameTree}.svg", width, height) as surface:
     # creating a cairo context object
     context = cairo.Context(surface)
 
@@ -185,11 +188,31 @@ with cairo.SVGSurface("tree.svg", width, height) as surface:
                 context.line_to(xVal+widthTab/2,yVal)
                 context.line_to(xVal+widthTab/2,yVal+heightTab+diffHeightTab)
 
-
-
     context.stroke()
 
     for (cx,cy) in listOfHoles:
         context.move_to(cx+radiusHole,cy)
         context.arc(cx,cy,radiusHole,0,2*pi)
     context.stroke()
+
+def draw_line(
+        context,
+        xVal,
+        yVal,
+        nVarCut,
+        stepWidthCut,
+        stepHeightCut,
+        widthCut,
+        widthTab,
+        kArc,
+        radiusHole,
+        distanceHole,
+        listOfHoles,
+        listOfTabs,
+        reverseTab=False,
+        aboveTabAndHoles=False, # for above corners, the tabs and holes are above the line
+        limitLine=False, # The main diagonal is common for the above and the below triangle. This will ensure that the tabs and holes are generated for both triangle
+        ascending=True,
+        ):
+    pass
+    # Return end point to link ascending and descending for a full triangle
