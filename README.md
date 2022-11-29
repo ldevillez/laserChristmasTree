@@ -4,6 +4,6 @@
 
 ## Todo
 - [ ] Doc
-- [ ] Layer system (with color ?) + auto fuse
-- [ ] Fulling missing corners (half triangle)
+- [x] Layer system (with color ?) + auto fuse
+- [x] Fulling missing corners (half triangle)
 - [ ] Adding Tabs below + generating base (usefull for quarter tree)
