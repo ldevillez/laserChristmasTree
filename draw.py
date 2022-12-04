@@ -18,6 +18,8 @@ def draw_line(
         aboveTabAndHoles=False, # for above corners, the tabs and holes are above the line
         limitLine=False, # The main diagonal is common for the above and the below triangle. This will ensure that the tabs and holes are generated for both triangle
         ascending=True,
+        prevLine=False,
+        offsetFirstTab=0,
         ):
     # Return end point to link ascending and descending for a full triangle
 
@@ -30,7 +32,8 @@ def draw_line(
     lossArcY = lossArcLength * sin(angle)
     radius = lossArcLength * tan(angle/2)
 
-    context.move_to(xVal,yVal)
+    if not prevLine:
+        context.move_to(xVal,yVal)
     if not ascending:
         stepHeightCut *= -1
         lossArcY *= -1
@@ -114,16 +117,20 @@ def draw_line(
     xValSave = xVal
     yValSave = yVal
 
+    print((stepWidthCut+widthCut)/2)
     for j in range(nCut + 1):
-        xVal = xValInit + stepWidthCut + j * stepWidthCut * 2
-        yVal = yValInit - j * stepHeightCut * 2
+        xVal = xValInit + j * stepWidthCut * 2 + (stepWidthCut + widthCut)/2
+        yVal = yValInit - j * stepHeightCut * 2 + stepHeightCut/2
 
-        heightTab = stepHeightCut - widthCut * tan(angle)
+
+
+        heightTab = stepHeightCut
         diffHeightTab = widthTab * tan(angle) / 2
 
         if not ascending:
-            yVal -= 2*stepHeightCut
-            heightTab = stepHeightCut + widthCut * tan(angle)
+            xVal += stepWidthCut -widthCut
+            yVal -= 3*stepHeightCut
+            heightTab = stepHeightCut
             heightTab *= -1
             diffHeightTab *= -1
 
@@ -136,17 +143,29 @@ def draw_line(
 
 
         if (j == 0 and ascending and not aboveTabAndHoles) or (j == nCut and not ascending and not aboveTabAndHoles) or (j==0 and not ascending and aboveTabAndHoles) or (j == nCut and ascending and aboveTabAndHoles):
+            if not ascending:
+                yVal += stepHeightCut
+            yVal -= stepHeightCut/2
             if (not reverseTab and not aboveTabAndHoles) or (aboveTabAndHoles and reverseTab):
                 diffHeightTab = 0
-            heightTab /= 2
+            heightTab /= 4
+
             if aboveTabAndHoles:
                 yVal += heightTab
             else:
                 yVal -= heightTab
 
+            if (not reverseTab and not aboveTabAndHoles) or (aboveTabAndHoles and reverseTab):
+                yVal += offsetFirstTab
+                heightTab -= offsetFirstTab
+            else:
+                yVal += offsetFirstTab
+                heightTab += offsetFirstTab
+
         if reverseTab:
             heightTab *= -1
 
+        # print(xVal)
         listOfTabs.append([
                 (xVal-widthTab/2,yVal+heightTab+diffHeightTab),
                 (xVal-widthTab/2,yVal),
@@ -168,3 +187,35 @@ def draw_line(
                 ])
 
     return (xValSave,yValSave)
+
+def draw_descending_line(
+        context,
+        xValInit,
+        yValInit,
+        widthCut,
+        nCut,
+        diagEdge,
+        alpha,
+        reverse
+        ):
+    xVal = xValInit
+    yVal = yValInit
+
+    if reverse:
+        widthCut *= -1
+        alpha = pi - alpha
+
+    context.move_to(xVal,yVal)
+    xVal += diagEdge * cos(alpha)
+    yVal += diagEdge * sin(alpha)
+    context.line_to(xVal,yVal)
+    for i in range(nCut):
+        xVal -= widthCut
+        context.line_to(xVal,yVal)
+        xVal += diagEdge * cos(alpha)
+        yVal += diagEdge * sin(alpha)
+        context.line_to(xVal,yVal)
+
+
+
+    return xValInit, yValInit

@@ -1,30 +1,31 @@
 import cairo
 import os
-from math import atan2, cos, sin, tan, pi
-from draw import draw_line
+from math import atan2, cos, sin, tan, pi, sqrt, sqrt
+from draw import draw_line, draw_descending_line
 
 
 nameTree="tree"
 
-width = 400
-height= 600
+width = 300
+height= 500
 full = True
 
 nStepWidth = 4
-nStepHeight = 4
+nStepHeight =4
 
 nCut = -1
 IncreasingCut = True
 
-widthCut = 15
+widthCut = 3
 karc = 0.4
 radiusHole = 2
 distanceHole = 10
 
-widthTab = 3
-reverseTab = False
+widthTab = 4.5
+reverseTab = True
+offsetFirstTab = 5
 
-corner = True
+corner = False
 
 colorInside = (0,0,1)
 colorHole = (0,0,0)
@@ -61,7 +62,6 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
     if full:
         stepWidth /= 2
 
-    varNCut = -1
     nLine = min(nStepWidth,nStepHeight)
     for i in range(nLine-1,-1,-1):
         if IncreasingCut:
@@ -91,7 +91,8 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
                 reverseTab,
                 False,
                 i==0 and corner,
-                True
+                True,
+                offsetFirstTab=offsetFirstTab
                 )
         if full:
             xVal, yVal = draw_line(
@@ -111,7 +112,9 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
                     reverseTab,
                     False,
                     i == 0 and corner,
-                    False
+                    False,
+                    prevLine=True,
+                    offsetFirstTab=offsetFirstTab
                     )
         if corner and i != 0:
             xVal, yVal = draw_line(
@@ -155,8 +158,39 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
                     )
 
     context.stroke()
-    # context.pop_group()
-    # context.push_group()
+
+
+
+    # widthCut = 10
+    # nCut = 5
+    # stepHeight = 70
+    # l = sqrt(height ** 2 + (width/2 + (nCut-1)*widthCut)**2)/nCut
+    # alpha = atan2(height,width/2 + (nCut-1) * widthCut)
+    # for i in range(nCut):
+        # xVal, yVal = draw_descending_line(
+            # context,
+            # width/2,
+            # i*stepHeight,
+            # widthCut,
+            # nCut,
+            # l,
+            # alpha,
+            # False,
+            # )
+        # xVal, yVal = draw_descending_line(
+            # context,
+            # width/2,
+            # i*stepHeight,
+            # widthCut,
+            # nCut,
+            # l,
+            # alpha,
+            # True,
+            # )
+    # context.set_source_rgba(1, 0, 0, 1)
+    # context.stroke()
+
+
 
     context.set_source_rgba(colorHole[0], colorHole[1], colorHole[2], 1)
     for tab in listOfTabs:
