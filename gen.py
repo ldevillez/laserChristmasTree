@@ -6,8 +6,8 @@ from draw import draw_line, draw_descending_line
 
 nameTree="tree"
 
-width = 300
-height= 500
+width = 1200
+height= 1800
 full = True
 
 nStepWidth = 4
@@ -16,12 +16,12 @@ nStepHeight =4
 nCut = -1
 IncreasingCut = True
 
-widthCut = 3
+widthCut = 12
 karc = 0.4
-radiusHole = 2
+radiusHole = 1.5
 distanceHole = 10
 
-widthTab = 4.5
+widthTab = 12 # 18mm / 4
 reverseTab = True
 offsetFirstTab = 5
 
@@ -43,6 +43,7 @@ widthTab *= scaleFactor
 with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
     # creating a cairo context object
     context = cairo.Context(surface)
+    surface.set_document_unit(6)
 
     # Setting group
     # context.push_group()

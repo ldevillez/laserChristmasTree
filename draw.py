@@ -117,7 +117,6 @@ def draw_line(
     xValSave = xVal
     yValSave = yVal
 
-    print((stepWidthCut+widthCut)/2)
     for j in range(nCut + 1):
         xVal = xValInit + j * stepWidthCut * 2 + (stepWidthCut + widthCut)/2
         yVal = yValInit - j * stepHeightCut * 2 + stepHeightCut/2
