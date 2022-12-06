@@ -6,12 +6,12 @@ from draw import draw_line, draw_descending_line
 
 nameTree="tree"
 
-width = 1200
+width = 1100
 height= 1800
 full = True
 
-nStepWidth = 4
-nStepHeight =4
+nStepWidth = 5
+nStepHeight =5
 
 nCut = -1
 IncreasingCut = True

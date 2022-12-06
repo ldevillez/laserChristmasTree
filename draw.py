@@ -121,13 +121,27 @@ def draw_line(
         xVal = xValInit + j * stepWidthCut * 2 + (stepWidthCut + widthCut)/2
         yVal = yValInit - j * stepHeightCut * 2 + stepHeightCut/2
 
+        if ascending:
+            xVal += - j * widthCut
+            yVal += j * widthCut * tan(angle)
+        else:
+            xVal += (nCut-j)* widthCut
+            yVal += (nCut-j) * widthCut * tan(angle)
+
+        if aboveTabAndHoles:
+            xVal += stepWidthCut - widthCut
+
 
 
         heightTab = stepHeightCut
         diffHeightTab = widthTab * tan(angle) / 2
 
         if not ascending:
-            xVal += stepWidthCut -widthCut
+            if aboveTabAndHoles:
+                xVal -= stepWidthCut -widthCut
+            else:
+                xVal += stepWidthCut -widthCut
+
             yVal -= 3*stepHeightCut
             heightTab = stepHeightCut
             heightTab *= -1
@@ -135,9 +149,9 @@ def draw_line(
 
         if aboveTabAndHoles:
             if ascending:
-                yVal -= stepHeightCut * 2
+                yVal -= stepHeightCut*3
             else:
-                yVal += stepHeightCut * 2
+                yVal += stepHeightCut*3
             # heightTab *= -1
 
 
@@ -150,21 +164,25 @@ def draw_line(
             heightTab /= 4
 
             if aboveTabAndHoles:
+                if ascending:
+                    yVal += stepHeightCut
+                else:
+                    yVal -= stepHeightCut
+
+            if aboveTabAndHoles:
                 yVal += heightTab
             else:
                 yVal -= heightTab
 
+            yVal += offsetFirstTab
             if (not reverseTab and not aboveTabAndHoles) or (aboveTabAndHoles and reverseTab):
-                yVal += offsetFirstTab
                 heightTab -= offsetFirstTab
             else:
-                yVal += offsetFirstTab
                 heightTab += offsetFirstTab
 
         if reverseTab:
             heightTab *= -1
 
-        # print(xVal)
         listOfTabs.append([
                 (xVal-widthTab/2,yVal+heightTab+diffHeightTab),
                 (xVal-widthTab/2,yVal),
@@ -175,8 +193,17 @@ def draw_line(
             xVal = 2*xValInit+ (nCut+1) * 2 * abs(stepWidthCut) - xVal
             yVal = (nCut+1) * 2 * abs(stepHeightCut) - yVal
 
-            if (j == 0 and ascending and not aboveTabAndHoles) or (j == nCut and not ascending and not aboveTabAndHoles) or (j==0 and not ascending and aboveTabAndHoles) or (j == nCut and ascending and aboveTabAndHoles):
-                diffHeightTab = 0
+            if (j == 0 and ascending) or (j ==nCut and not ascending):
+                if not reverseTab :
+                    heightTab += 2*offsetFirstTab
+                else:
+                    heightTab -= 2*offsetFirstTab
+
+            if (j == 0 and ascending and not aboveTabAndHoles) or (j == nCut and not ascending and not aboveTabAndHoles):
+                if (not reverseTab and not aboveTabAndHoles) or (aboveTabAndHoles and reverseTab):
+                    diffHeightTab = widthTab * tan(angle) / 2
+                else:
+                    diffHeightTab = 0
 
             listOfTabs.append([
                     (xVal-widthTab/2,yVal+heightTab+diffHeightTab),
