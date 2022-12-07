@@ -10,8 +10,8 @@ width = 1100
 height= 1800
 full = True
 
-nStepWidth = 5
-nStepHeight =5
+nStepWidth = 6
+nStepHeight = 6
 
 nCut = -1
 IncreasingCut = True
@@ -23,9 +23,16 @@ distanceHole = 10
 
 widthTab = 12 # 18mm / 4
 reverseTab = True
-offsetFirstTab = 5
+offsetFirstTab = 15
 
-corner = False
+distSmallHole = 60
+radiusSmallHole = 1.5
+distBetweenHoles = 13
+radiusBigHole = 25
+distBetweenHoles2 = 50
+radiusBigBigHole = 45
+
+corner = True
 
 colorInside = (0,0,1)
 colorHole = (0,0,0)
@@ -96,6 +103,8 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
                 offsetFirstTab=offsetFirstTab
                 )
         if full:
+            xValSave = xVal
+            yValSave = yVal
             xVal, yVal = draw_line(
                     context,
                     xVal,
@@ -117,6 +126,21 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
                     prevLine=True,
                     offsetFirstTab=offsetFirstTab
                     )
+
+            # Adding more circle
+            cx =xValSave
+            cy = yValSave + distSmallHole + radiusSmallHole
+            listOfHoles.append((cx,cy,radiusSmallHole))
+
+            cy = yValSave + distSmallHole + radiusSmallHole*2 + distBetweenHoles + radiusBigHole
+            listOfHoles.append((cx,cy,radiusBigHole))
+
+            cy = yValSave + distSmallHole + radiusSmallHole*2 + distBetweenHoles + radiusBigHole * 2 + distBetweenHoles2 + radiusSmallHole
+            listOfHoles.append((cx,cy,radiusSmallHole))
+            cy = yValSave + distSmallHole + radiusSmallHole*2 + distBetweenHoles + radiusBigHole * 2 + distBetweenHoles2 + radiusSmallHole*2+distBetweenHoles + radiusBigBigHole
+            listOfHoles.append((cx,cy,radiusBigBigHole))
+
+
         if corner and i != 0:
             xVal, yVal = draw_line(
                 context,
@@ -162,36 +186,6 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
 
 
 
-    # widthCut = 10
-    # nCut = 5
-    # stepHeight = 70
-    # l = sqrt(height ** 2 + (width/2 + (nCut-1)*widthCut)**2)/nCut
-    # alpha = atan2(height,width/2 + (nCut-1) * widthCut)
-    # for i in range(nCut):
-        # xVal, yVal = draw_descending_line(
-            # context,
-            # width/2,
-            # i*stepHeight,
-            # widthCut,
-            # nCut,
-            # l,
-            # alpha,
-            # False,
-            # )
-        # xVal, yVal = draw_descending_line(
-            # context,
-            # width/2,
-            # i*stepHeight,
-            # widthCut,
-            # nCut,
-            # l,
-            # alpha,
-            # True,
-            # )
-    # context.set_source_rgba(1, 0, 0, 1)
-    # context.stroke()
-
-
 
     context.set_source_rgba(colorHole[0], colorHole[1], colorHole[2], 1)
     for tab in listOfTabs:
@@ -199,9 +193,9 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
         for (xVal,yVal) in tab[1:]:
             context.line_to(xVal,yVal)
 
-    for (cx,cy) in listOfHoles:
-        context.move_to(cx+radiusHole,cy)
-        context.arc(cx,cy,radiusHole,0,2*pi)
+    for (cx,cy,r) in listOfHoles:
+        context.move_to(cx+r,cy)
+        context.arc(cx,cy,r,0,2*pi)
 
     context.stroke()
 

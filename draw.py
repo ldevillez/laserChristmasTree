@@ -55,14 +55,14 @@ def draw_line(
     context.line_to(xVal,yVal)
     if not aboveTabAndHoles or limitLine:
         if ascending:
-            listOfHoles.append((xVal - widthCut + distanceHole*cos(angle/2),yVal - distanceHole*sin(angle/2)))
+            listOfHoles.append((xVal - widthCut + distanceHole*cos(angle/2),yVal - distanceHole*sin(angle/2), radiusHole))
         else:
-            listOfHoles.append((xVal + widthCut - distanceHole*cos(angle/2),yVal - distanceHole*sin(angle/2)))
+            listOfHoles.append((xVal + widthCut - distanceHole*cos(angle/2),yVal - distanceHole*sin(angle/2), radiusHole))
     if aboveTabAndHoles or limitLine:
         if ascending:
-            listOfHoles.append((xVal + widthCut - distanceHole*cos(angle/2),yVal + distanceHole*sin(angle/2)))
+            listOfHoles.append((xVal + widthCut - distanceHole*cos(angle/2),yVal + distanceHole*sin(angle/2), radiusHole))
         else:
-            listOfHoles.append((xVal - widthCut + distanceHole*cos(angle/2),yVal + distanceHole*sin(angle/2)))
+            listOfHoles.append((xVal - widthCut + distanceHole*cos(angle/2),yVal + distanceHole*sin(angle/2), radiusHole))
 
     for j in range(nCut):
 
@@ -90,20 +90,21 @@ def draw_line(
         context.line_to(xVal, yVal)
         if not aboveTabAndHoles or limitLine:
             if ascending:
-                listOfHoles.append((xVal - widthCut + distanceHole*cos(angle/2),yVal - distanceHole*sin(angle/2)))
+                listOfHoles.append((xVal - widthCut + distanceHole*cos(angle/2),yVal - distanceHole*sin(angle/2), radiusHole))
             else:
-                listOfHoles.append((xVal + widthCut - distanceHole*cos(angle/2),yVal - distanceHole*sin(angle/2)))
+                listOfHoles.append((xVal + widthCut - distanceHole*cos(angle/2),yVal - distanceHole*sin(angle/2), radiusHole))
         if aboveTabAndHoles or limitLine:
             if ascending:
-                listOfHoles.append((xVal + widthCut - distanceHole*cos(angle/2),yVal + distanceHole*sin(angle/2)))
+                listOfHoles.append((xVal + widthCut - distanceHole*cos(angle/2),yVal + distanceHole*sin(angle/2), radiusHole))
             else:
-                listOfHoles.append((xVal - widthCut + distanceHole*cos(angle/2),yVal + distanceHole*sin(angle/2)))
+                listOfHoles.append((xVal - widthCut + distanceHole*cos(angle/2),yVal + distanceHole*sin(angle/2), radiusHole))
 
 
     xVal -= widthCut - lossArcLength
     context.line_to(xVal,yVal)
 
     yVal -= radius
+
     if ascending:
         context.arc(xVal,yVal, radius, pi/2, 3*pi/2 - angle)
     else:
@@ -117,71 +118,81 @@ def draw_line(
     xValSave = xVal
     yValSave = yVal
 
+    # TABS
+    if aboveTabAndHoles:
+        reverseTab = not reverseTab
+    offsetX = widthTab /2
+    offsetY = offsetX * tan(angle)
+
     for j in range(nCut + 1):
-        xVal = xValInit + j * stepWidthCut * 2 + (stepWidthCut + widthCut)/2
-        yVal = yValInit - j * stepHeightCut * 2 + stepHeightCut/2
-
-        if ascending:
-            xVal += - j * widthCut
-            yVal += j * widthCut * tan(angle)
-        else:
-            xVal += (nCut-j)* widthCut
-            yVal += (nCut-j) * widthCut * tan(angle)
-
-        if aboveTabAndHoles:
-            xVal += stepWidthCut - widthCut
-
+        xVal = xValInit + j * stepWidthCut * 2
+        yVal = yValInit - j * stepHeightCut * 2
 
 
         heightTab = stepHeightCut
         diffHeightTab = widthTab * tan(angle) / 2
 
-        if not ascending:
-            if aboveTabAndHoles:
-                xVal -= stepWidthCut -widthCut
-            else:
-                xVal += stepWidthCut -widthCut
+        if aboveTabAndHoles:
+            diffHeightTab *= -1
 
-            yVal -= 3*stepHeightCut
-            heightTab = stepHeightCut
+
+        if (not ascending and not aboveTabAndHoles) or (ascending and aboveTabAndHoles):
+            xVal += 2 * stepWidthCut
+            yVal -= 2 * stepHeightCut # reversed
             heightTab *= -1
             diffHeightTab *= -1
 
-        if aboveTabAndHoles:
-            if ascending:
-                yVal -= stepHeightCut*3
-            else:
-                yVal += stepHeightCut*3
-            # heightTab *= -1
+        # Special small tab
+        smallTab = False
+        if (j == 0 and (ascending and not aboveTabAndHoles) ):
+            xVal += (stepWidthCut + widthCut)/2
+            yVal -= (stepWidthCut + widthCut) * tan(angle) / 2
+            smallTab = True
 
+        elif (j == nCut and ((not ascending and not aboveTabAndHoles))):
+            xVal -= (stepWidthCut + widthCut)/2
+            yVal -= (stepWidthCut + widthCut) * tan(angle) / 2
+            smallTab = True
 
-        if (j == 0 and ascending and not aboveTabAndHoles) or (j == nCut and not ascending and not aboveTabAndHoles) or (j==0 and not ascending and aboveTabAndHoles) or (j == nCut and ascending and aboveTabAndHoles):
-            if not ascending:
-                yVal += stepHeightCut
-            yVal -= stepHeightCut/2
-            if (not reverseTab and not aboveTabAndHoles) or (aboveTabAndHoles and reverseTab):
+        elif (j == nCut and ascending and aboveTabAndHoles):
+            xVal -= (stepWidthCut + widthCut)/2
+            yVal += (stepWidthCut + widthCut) * tan(angle) / 2
+            smallTab = True
+
+        elif (j == 0 and not ascending and aboveTabAndHoles):
+            xVal += (stepWidthCut + widthCut)/2
+            yVal += (stepWidthCut + widthCut) * tan(angle) / 2
+            smallTab = True
+
+        if smallTab:
+            heightTab = (stepWidthCut + widthCut) * tan(angle)/4 + offsetFirstTab
+            if aboveTabAndHoles:
+                heightTab *= -1
+            if not reverseTab:
                 diffHeightTab = 0
-            heightTab /= 4
-
-            if aboveTabAndHoles:
-                if ascending:
-                    yVal += stepHeightCut
-                else:
-                    yVal -= stepHeightCut
-
-            if aboveTabAndHoles:
-                yVal += heightTab
+        else:
+            if (ascending and not aboveTabAndHoles):
+                xVal += offsetX
+                yVal -= offsetY
+            elif (not ascending and not aboveTabAndHoles):
+                xVal -= offsetX
+                yVal -= offsetY
+            elif (ascending and aboveTabAndHoles):
+                xVal -= offsetX
+                yVal += offsetY
             else:
-                yVal -= heightTab
+                xVal += offsetX
+                yVal += offsetY
 
-            yVal += offsetFirstTab
-            if (not reverseTab and not aboveTabAndHoles) or (aboveTabAndHoles and reverseTab):
-                heightTab -= offsetFirstTab
-            else:
-                heightTab += offsetFirstTab
+
+        yVal += heightTab
+
 
         if reverseTab:
             heightTab *= -1
+        else:
+            if smallTab:
+                heightTab -= 2 * offsetFirstTab
 
         listOfTabs.append([
                 (xVal-widthTab/2,yVal+heightTab+diffHeightTab),
@@ -193,15 +204,19 @@ def draw_line(
             xVal = 2*xValInit+ (nCut+1) * 2 * abs(stepWidthCut) - xVal
             yVal = (nCut+1) * 2 * abs(stepHeightCut) - yVal
 
-            if (j == 0 and ascending) or (j ==nCut and not ascending):
+            if smallTab:
+                heightTab += offsetFirstTab
                 if not reverseTab :
-                    heightTab += 2*offsetFirstTab
+                    yVal += offsetFirstTab
                 else:
-                    heightTab -= 2*offsetFirstTab
+                    yVal += offsetFirstTab
 
             if (j == 0 and ascending and not aboveTabAndHoles) or (j == nCut and not ascending and not aboveTabAndHoles):
                 if (not reverseTab and not aboveTabAndHoles) or (aboveTabAndHoles and reverseTab):
-                    diffHeightTab = widthTab * tan(angle) / 2
+                    if not ascending:
+                        diffHeightTab = -widthTab * tan(angle) / 2
+                    else:
+                        diffHeightTab = widthTab * tan(angle) / 2
                 else:
                     diffHeightTab = 0
 
