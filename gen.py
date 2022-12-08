@@ -4,10 +4,10 @@ from math import atan2, cos, sin, tan, pi, sqrt, sqrt
 from draw import draw_line, draw_descending_line
 
 
-nameTree="tree"
+nameTree="tree_smol"
 
-width = 1100
-height= 1800
+width = 1100/4
+height= 1800/4
 full = True
 
 nStepWidth = 6
@@ -16,21 +16,21 @@ nStepHeight = 6
 nCut = -1
 IncreasingCut = True
 
-widthCut = 12
+widthCut = 12/4
 karc = 0.4
-radiusHole = 1.5
-distanceHole = 10
+radiusHole = 1.8/4
+distanceHole = 14/4
 
-widthTab = 12 # 18mm / 4
+widthTab = 12 /4
 reverseTab = True
-offsetFirstTab = 15
+offsetFirstTab = 15/4
 
-distSmallHole = 60
-radiusSmallHole = 1.5
-distBetweenHoles = 13
-radiusBigHole = 25
-distBetweenHoles2 = 50
-radiusBigBigHole = 45
+distSmallHole = 60/4
+radiusSmallHole = 1.5/4
+distBetweenHoles = 13/4
+radiusBigHole = 25/4
+distBetweenHoles2 = 50/4
+radiusBigBigHole = 45/4
 
 corner = True
 
