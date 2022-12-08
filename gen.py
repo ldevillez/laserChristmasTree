@@ -4,35 +4,37 @@ from math import atan2, cos, sin, tan, pi, sqrt, sqrt
 from draw import draw_line, draw_descending_line
 
 
-nameTree="tree_smol"
+nameTree="tree"
 
-width = 1100/4
-height= 1800/4
+width = 1100
+height= 1800
 full = True
 
-nStepWidth = 6
-nStepHeight = 6
+nStepWidth = 5
+nStepHeight = 5
 
 nCut = -1
 IncreasingCut = True
 
-widthCut = 12/4
+widthCut = 12
 karc = 0.4
-radiusHole = 1.8/4
-distanceHole = 14/4
+radiusHole = 1.8
+distanceHole = 14
 
-widthTab = 12 /4
-reverseTab = True
-offsetFirstTab = 15/4
+widthTab = 12
+reverseTab = False
+offsetFirstTab = 15
 
-distSmallHole = 60/4
-radiusSmallHole = 1.5/4
-distBetweenHoles = 13/4
-radiusBigHole = 25/4
-distBetweenHoles2 = 50/4
-radiusBigBigHole = 45/4
+distSmallHole = 60
+radiusSmallHole = 1.5
+distBetweenHoles = 13
+radiusBigHole = 25
+distBetweenHoles2 = 50
+radiusBigBigHole = 45
 
-corner = True
+corner = False
+
+CNC = True
 
 colorInside = (0,0,1)
 colorHole = (0,0,0)
@@ -126,6 +128,9 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
                     prevLine=True,
                     offsetFirstTab=offsetFirstTab
                     )
+            if CNC:
+                context.close_path()
+                context.stroke()
 
             # Adding more circle
             cx =xValSave
@@ -192,6 +197,8 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
         context.move_to(tab[0][0],tab[0][1])
         for (xVal,yVal) in tab[1:]:
             context.line_to(xVal,yVal)
+        if CNC:
+            context.close_path()
 
     for (cx,cy,r) in listOfHoles:
         context.move_to(cx+r,cy)
@@ -199,20 +206,27 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
 
     context.stroke()
 
-    context.set_source_rgba(colorBorder[0], colorBorder[1], colorBorder[2], 1)
-    context.move_to(0,height)
-    context.line_to(width,height)
-    if not full or corner:
-        context.line_to(width,0)
-        if corner:
-            context.line_to(0,0)
-            context.line_to(0,height)
-    context.stroke()
+    if not CNC:
+        context.set_source_rgba(colorBorder[0], colorBorder[1], colorBorder[2], 1)
+        context.move_to(0,height)
+        context.line_to(width,height)
+        if not full or corner:
+            context.line_to(width,0)
+            if corner:
+                context.line_to(0,0)
+                context.line_to(0,height)
+        context.stroke()
 
 i = 1
 with open(f"{nameTree}.svg","w+") as out_file:
     with open("tmp.svg", "r") as f:
         for line in f.readlines():
+            if "<svg" in line:
+                line = line.replace(">", """
+  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+>
+""")
             if "path" in line:
                 out_file.write(f"""  <g
     inkscape:groupmode="layer"

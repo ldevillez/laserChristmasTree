@@ -121,7 +121,11 @@ def draw_line(
     # TABS
     if aboveTabAndHoles:
         reverseTab = not reverseTab
-    offsetX = widthTab /2
+
+    angleDrawLine = atan2(stepHeightCut,stepWidthCut+widthCut)
+    varOffsetX = 0.1 * (stepWidthCut + widthCut)
+    varOffsetY = varOffsetX * tan(angleDrawLine)
+    offsetX = (widthTab /2 + stepWidthCut/2)
     offsetY = offsetX * tan(angle)
 
     for j in range(nCut + 1):
@@ -172,17 +176,17 @@ def draw_line(
                 diffHeightTab = 0
         else:
             if (ascending and not aboveTabAndHoles):
-                xVal += offsetX
-                yVal -= offsetY
+                xVal += offsetX - j*varOffsetX
+                yVal -= offsetY - j * varOffsetY
             elif (not ascending and not aboveTabAndHoles):
-                xVal -= offsetX
-                yVal -= offsetY
+                xVal -= offsetX - (nCut-j) *varOffsetX
+                yVal -= offsetY + (nCut-j)* varOffsetY
             elif (ascending and aboveTabAndHoles):
-                xVal -= offsetX
-                yVal += offsetY
+                xVal -= offsetX - (nCut - j) * varOffsetX
+                yVal += offsetY - (nCut - j) * varOffsetY
             else:
-                xVal += offsetX
-                yVal += offsetY
+                xVal += offsetX + j * varOffsetX
+                yVal += offsetY + j * varOffsetY
 
 
         yVal += heightTab
