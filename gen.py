@@ -32,7 +32,7 @@ radiusBigHole = 25
 distBetweenHoles2 = 50
 radiusBigBigHole = 45
 
-corner = False
+corner = True
 
 CNC = True
 
@@ -206,7 +206,7 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
 
     context.stroke()
 
-    if not CNC:
+    if CNC:
         context.set_source_rgba(colorBorder[0], colorBorder[1], colorBorder[2], 1)
         context.move_to(0,height)
         context.line_to(width,height)
@@ -215,6 +215,7 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
             if corner:
                 context.line_to(0,0)
                 context.line_to(0,height)
+        context.close_path()
         context.stroke()
 
 i = 1

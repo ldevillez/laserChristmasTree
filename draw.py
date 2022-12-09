@@ -186,7 +186,7 @@ def draw_line(
                 yVal += offsetY - (nCut - j) * varOffsetY
             else:
                 xVal += offsetX + j * varOffsetX
-                yVal += offsetY + j * varOffsetY
+                yVal += offsetY - j * varOffsetY
 
 
         yVal += heightTab
