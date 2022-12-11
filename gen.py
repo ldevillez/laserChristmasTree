@@ -197,8 +197,8 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
         context.move_to(tab[0][0],tab[0][1])
         for (xVal,yVal) in tab[1:]:
             context.line_to(xVal,yVal)
-        if CNC:
-            context.close_path()
+        # if CNC:
+            # context.close_path()
 
     for (cx,cy,r) in listOfHoles:
         context.move_to(cx+r,cy)

@@ -123,14 +123,15 @@ def draw_line(
         reverseTab = not reverseTab
 
     angleDrawLine = atan2(stepHeightCut,stepWidthCut+widthCut)
-    varOffsetX = 0.1 * (stepWidthCut + widthCut)
+    varOffsetX = 0.1 * (stepWidthCut + widthCut) * 0
     varOffsetY = varOffsetX * tan(angleDrawLine)
-    offsetX = (widthTab /2 + stepWidthCut/2)
+    offsetX = (widthTab /2 + stepWidthCut/2) * 0
     offsetY = offsetX * tan(angle)
 
     for j in range(nCut + 1):
-        xVal = xValInit + j * stepWidthCut * 2
-        yVal = yValInit - j * stepHeightCut * 2
+        xVal = xValInit + j * stepWidthCut * 2  + stepWidthCut /2
+        yVal = yValInit - j * stepHeightCut * 2 - stepWidthCut /2 * tan(angleDrawLine)
+
 
 
         heightTab = stepHeightCut
@@ -141,39 +142,40 @@ def draw_line(
 
 
         if (not ascending and not aboveTabAndHoles) or (ascending and aboveTabAndHoles):
-            xVal += 2 * stepWidthCut
-            yVal -= 2 * stepHeightCut # reversed
+            xVal +=  stepWidthCut
+            yVal -=  (stepWidthCut+2*widthCut) * tan(angleDrawLine) # reversed
             heightTab *= -1
             diffHeightTab *= -1
+
 
         # Special small tab
         smallTab = False
         if (j == 0 and (ascending and not aboveTabAndHoles) ):
-            xVal += (stepWidthCut + widthCut)/2
-            yVal -= (stepWidthCut + widthCut) * tan(angle) / 2
+            # xVal += (stepWidthCut + widthCut)/2
+            # yVal -= (stepWidthCut + widthCut) * tan(angle) / 2
             smallTab = True
 
         elif (j == nCut and ((not ascending and not aboveTabAndHoles))):
-            xVal -= (stepWidthCut + widthCut)/2
-            yVal -= (stepWidthCut + widthCut) * tan(angle) / 2
+            #xVal -= (stepWidthCut + widthCut)/2
+            #yVal -= (stepWidthCut + widthCut) * tan(angle) / 2
             smallTab = True
 
         elif (j == nCut and ascending and aboveTabAndHoles):
-            xVal -= (stepWidthCut + widthCut)/2
-            yVal += (stepWidthCut + widthCut) * tan(angle) / 2
+            #xVal -= (stepWidthCut + widthCut)/2
+            #yVal += (stepWidthCut + widthCut) * tan(angle) / 2
             smallTab = True
 
         elif (j == 0 and not ascending and aboveTabAndHoles):
-            xVal += (stepWidthCut + widthCut)/2
-            yVal += (stepWidthCut + widthCut) * tan(angle) / 2
+            #xVal += (stepWidthCut + widthCut)/2
+            #yVal += (stepWidthCut + widthCut) * tan(angle) / 2
             smallTab = True
 
         if smallTab:
-            heightTab = (stepWidthCut + widthCut) * tan(angle)/4 + offsetFirstTab
-            if aboveTabAndHoles:
-                heightTab *= -1
+            heightTab = abs(stepWidthCut/2 * tan(angleDrawLine)/2) + offsetFirstTab
             if not reverseTab:
                 diffHeightTab = 0
+            else:
+                heightTab *= -1
         else:
             if (ascending and not aboveTabAndHoles):
                 xVal += offsetX - j*varOffsetX
