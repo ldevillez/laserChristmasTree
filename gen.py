@@ -22,7 +22,7 @@ radiusHole = 1.8
 distanceHole = 14
 
 widthTab = 12
-reverseTab = False
+reverseTab = True
 offsetFirstTab = 15
 
 distSmallHole = 60
@@ -164,7 +164,8 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
                 reverseTab,
                 True,
                 False,
-                True
+                True,
+                offsetFirstTab=offsetFirstTab
                 )
             if full:
                 xVal, yVal = draw_line(
@@ -184,7 +185,8 @@ with cairo.SVGSurface(f"tmp.svg", width, height) as surface:
                     reverseTab,
                     True,
                     False,
-                    False
+                    False,
+                    offsetFirstTab=offsetFirstTab
                     )
 
     context.stroke()

@@ -172,10 +172,10 @@ def draw_line(
 
         if smallTab:
             heightTab = abs(stepWidthCut/2 * tan(angleDrawLine)/2) + offsetFirstTab
+
             if not reverseTab:
                 diffHeightTab = 0
-            else:
-                heightTab *= -1
+                print("yosh")
         else:
             if (ascending and not aboveTabAndHoles):
                 xVal += offsetX - j*varOffsetX
@@ -191,14 +191,21 @@ def draw_line(
                 yVal += offsetY - j * varOffsetY
 
 
+        if smallTab and not reverseTab and aboveTabAndHoles:
+            heightTab *= -1
+
         yVal += heightTab
+
+
+        if smallTab and not reverseTab and not aboveTabAndHoles:
+            heightTab -= 2 * offsetFirstTab
+        elif smallTab and not reverseTab and aboveTabAndHoles:
+            heightTab += 2 * offsetFirstTab
 
 
         if reverseTab:
             heightTab *= -1
-        else:
-            if smallTab:
-                heightTab -= 2 * offsetFirstTab
+
 
         listOfTabs.append([
                 (xVal-widthTab/2,yVal+heightTab+diffHeightTab),
@@ -211,11 +218,12 @@ def draw_line(
             yVal = (nCut+1) * 2 * abs(stepHeightCut) - yVal
 
             if smallTab:
-                heightTab += offsetFirstTab
                 if not reverseTab :
-                    yVal += offsetFirstTab
+                    heightTab += 2*offsetFirstTab
+                    # yVal += offsetFirstTab
                 else:
-                    yVal += offsetFirstTab
+                    heightTab += 2*offsetFirstTab
+                    # yVal += offsetFirstTab
 
             if (j == 0 and ascending and not aboveTabAndHoles) or (j == nCut and not ascending and not aboveTabAndHoles):
                 if (not reverseTab and not aboveTabAndHoles) or (aboveTabAndHoles and reverseTab):
