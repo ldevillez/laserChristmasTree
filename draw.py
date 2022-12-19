@@ -242,35 +242,3 @@ def draw_line(
                 ])
 
     return (xValSave,yValSave)
-
-def draw_descending_line(
-        context,
-        xValInit,
-        yValInit,
-        widthCut,
-        nCut,
-        diagEdge,
-        alpha,
-        reverse
-        ):
-    xVal = xValInit
-    yVal = yValInit
-
-    if reverse:
-        widthCut *= -1
-        alpha = pi - alpha
-
-    context.move_to(xVal,yVal)
-    xVal += diagEdge * cos(alpha)
-    yVal += diagEdge * sin(alpha)
-    context.line_to(xVal,yVal)
-    for i in range(nCut):
-        xVal -= widthCut
-        context.line_to(xVal,yVal)
-        xVal += diagEdge * cos(alpha)
-        yVal += diagEdge * sin(alpha)
-        context.line_to(xVal,yVal)
-
-
-
-    return xValInit, yValInit
