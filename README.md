@@ -1,6 +1,6 @@
 
 # Laser Christmas Tree
-...
+Project to draw with pyhton svg files for a laser or a CNC. All the parameter of the tree are in the `gen.py` file
 
 ## Todo
 - [ ] Doc
